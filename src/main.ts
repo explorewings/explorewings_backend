@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import compression from 'compression';
 import { AppModule } from './app.module';
 
@@ -7,7 +7,9 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
   app.use(compression());
-  app.setGlobalPrefix('rest/v1');
+  app.setGlobalPrefix('rest/v1', {
+    exclude: [{ path: '/', method: RequestMethod.GET }],
+  });
   app.enableCors({
     origin: true,
     credentials: true,
