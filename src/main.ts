@@ -29,10 +29,13 @@ async function bootstrap(): Promise<void> {
   app.enableShutdownHooks();
 
   const port = Number(process.env.PORT ?? 3000);
-  await app.listen(port, '0.0.0.0');
+  // Hostless and similar PaaS set HOST; binding loopback makes the app
+  // unreachable from the platform proxy even when the port is right.
+  const host = process.env.HOST ?? '0.0.0.0';
+  await app.listen(port, host);
 
   logConfigSummary();
-  console.log(`[explore-wings-api] listening on 0.0.0.0:${port}`);
+  console.log(`[explore-wings-api] listening on ${host}:${port}`);
   console.log('[explore-wings-api] base path: /rest/v1');
 }
 

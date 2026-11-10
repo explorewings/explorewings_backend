@@ -8,10 +8,10 @@
   },
   "scripts": {
     "build": "nest build",
-    "start": "nest start",
+    "start": "node dist/main.js",
     "start:prod": "node dist/main.js",
-    "dev": "nest start --watch",
     "start:dev": "nest start --watch",
+    "dev": "nest start --watch",
     "seed": "tsc -p tsconfig.seed.json && node dist/scripts/seed.js"
   },
   "dependencies": {
