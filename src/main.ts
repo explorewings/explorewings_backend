@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import compression from 'compression';
 import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './common/all-exceptions.filter';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -21,12 +22,13 @@ async function bootstrap(): Promise<void> {
       transformOptions: { enableImplicitConversion: true },
     }),
   );
+  app.useGlobalFilters(new AllExceptionsFilter());
   app.enableShutdownHooks();
 
   const port = Number(process.env.PORT ?? 3000);
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
-  console.log(`[explore-wings-api] listening on :${port}`);
+  console.log(`[explore-wings-api] listening on 0.0.0.0:${port}`);
   console.log('[explore-wings-api] base path: /rest/v1');
 }
 
