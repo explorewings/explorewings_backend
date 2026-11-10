@@ -3,8 +3,11 @@ import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import compression from 'compression';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/all-exceptions.filter';
+import { assertEnv, logConfigSummary } from './common/env-check';
 
 async function bootstrap(): Promise<void> {
+  assertEnv();
+
   const app = await NestFactory.create(AppModule);
 
   app.use(compression());
@@ -28,8 +31,15 @@ async function bootstrap(): Promise<void> {
   const port = Number(process.env.PORT ?? 3000);
   await app.listen(port, '0.0.0.0');
 
+  logConfigSummary();
   console.log(`[explore-wings-api] listening on 0.0.0.0:${port}`);
   console.log('[explore-wings-api] base path: /rest/v1');
 }
 
-void bootstrap();
+bootstrap().catch((err: unknown) => {
+  console.error(
+    '[explore-wings-api] failed to start:',
+    err instanceof Error ? err.message : err,
+  );
+  process.exit(1);
+});
